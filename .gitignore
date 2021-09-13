@@ -2,3 +2,5 @@ venv/
 logs/
 *.db
 .vscode/
+*.pyc
+__pycache__/
