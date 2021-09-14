@@ -1,6 +1,7 @@
 wheel
 Flask
 flask-wtf
+email_validator
 flask-sqlalchemy
 flask-migrate
 flask-login
