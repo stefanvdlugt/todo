@@ -8,6 +8,8 @@ from flask_login import LoginManager
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
+login.login_view = 'auth.login'
+login.login_message = 'Please log in to access this page.'
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -16,14 +18,14 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app,db)
 
-    login.login_view = 'auth.login'
-    login.init_app(app)
-
     from app.main import main
     app.register_blueprint(main)
 
     from app.auth import auth
     app.register_blueprint(auth,url_prefix='/auth')
+
+    login.init_app(app)
+
 
     return app
 

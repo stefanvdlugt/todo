@@ -1,35 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Login</h1>
-<form action="" method="post">
-    {{ form.hidden_tag() }}
-    <p>
-        {{ form.username.label }}<br/>
-        {{ form.username }}<br/>
-        {% for error in form.username.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.password.label }}<br/>
-        {{ form.password }}<br/>
-        {% for error in form.password.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-        {% if login_error %}
-        <span style="color: red;">[{{ login_error }}]</span>
-        {% endif %}
-    </p>
-    <p>
-        {{ form.remember_me.label }}<br/>
-        {{ form.remember_me }}<br/>
-        {% for error in form.remember_me.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.submit }}
-    </p>
-</form>
+<section class="hero is-primary is-fullheight-with-navbar">
+    <div class="hero-body">
+        <div class="container">
+            <div class="column is-4 is-offset-4">
+                <h3 class="title">Login</h3>
+                <div class="box">
+                    {% with messages = get_flashed_messages() %}
+                    {% for message in messages %}
+                    <div class="notification is-danger">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endwith %}
+                    <form action="" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ render_input(form.username, icon="fas fa-user") }}
+                        {{ render_input(form.password, icon="fas fa-key") }}
+                        {{ render_checkbox(form.remember_me) }}
+                        {{ render_button(form.submit, class="is-success") }}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
