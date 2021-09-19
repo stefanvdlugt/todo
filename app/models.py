@@ -19,6 +19,8 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(256), index=True, unique=True)
     password_hash = db.Column(db.String(128))
 
+    tasks = db.relationship('Task', backref='owner', lazy='dynamic')
+
     def __repr__(self):
         return f"<User {self.username}>"
 
@@ -33,5 +35,13 @@ class User(UserMixin, db.Model):
 
 @login.user_loader
 def load_user(id):
-    print((id, bytes.fromhex(id)))
     return User.query.get(bytes.fromhex(id))
+
+class Task(db.Model):
+    id = db.Column(db.BINARY(length=16), primary_key=True, default=keygen)
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    name = db.Column(db.String(100))
+    deadline = db.Column(db.DateTime)
+
+    def __repr__(self):
+        return f"<Task {self.id}: {self.name}>"

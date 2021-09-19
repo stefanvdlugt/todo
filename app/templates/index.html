@@ -1,5 +1,39 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Index page</h1>
+<form action="{{ url_for('main.add_task') }}" method="post">
+    <div class="field has-addons">
+        <p class="control has-icons-left is-expanded">
+            <input class="input" type="text" name="task" placeholder="Add a new task...">
+            <span class="icon is-small is-left">
+                <i class="fas fa-tasks"></i>
+            </span>
+        </p>
+        <div class="control">
+            <button class="button is-success">
+                <span class="icon">
+                    <i class="fas fa-plus"></i>
+                </span>
+                <span>Add</span>
+            </button>
+        </div>
+    </div>
+</form>
+<table class="table is-hoverable is-fullwidth">
+    <thead>
+        <tr>
+            <th>Task</th>
+            <th style="width:.1%;"></th>
+        </tr>
+    </thead>
+    {% for task in tasks %}
+    <tr>
+        <td>{{ task.name }}</td>
+        <td style="white-space: nowrap;">
+            <a class="icon has-text-info" title="Edit task" href="{{ url_for('main.edit_task', task_id=task.id) }}"><i class="fas fa-edit"></i></a>
+            <a class="icon has-text-danger" title="Delete task" href="{{ url_for('main.delete_task', task_id=task.id) }}"><i class="fas fa-times"></i></a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
 {% endblock %}
