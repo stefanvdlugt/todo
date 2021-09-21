@@ -21,6 +21,8 @@
                         {{ render_checkbox(form.remember_me) }}
                         {{ render_button(form.submit, class="is-success") }}
                     </form>
+                    <br/>
+                    Don't have an account? <u><a href="{{ url_for('auth.register') }}">Register here.</a></u>
                 </div>
             </div>
         </div>
