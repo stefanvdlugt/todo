@@ -10,7 +10,7 @@ from app.main.forms import TaskEditForm
 @main.route('/index')
 @login_required
 def index():
-    tasks = current_user.tasks
+    tasks = current_user.get_tasks()
     return render_template('index.html',tasks=tasks)
 
 @main.route('/add_task', methods=['POST'])
@@ -37,6 +37,22 @@ def delete_task(task_id):
         return redirect(url_for('main.index'))
     else:
         abort(404)
+
+@main.route('/favorite/<task_id>/<fav>')
+@login_required
+def favorite(task_id,fav):
+    try:
+        b = bytes.fromhex(task_id)
+    except:
+        abort(404)
+    task=Task.query.get(b)
+    if task is not None and task.owner==current_user:
+        task.favorite = bool(int(fav))
+        db.session.commit()
+        return(redirect(url_for('main.index')))
+    else:
+        abort(404)
+
 
 @main.route('/edit_task/<task_id>', methods=['POST','GET'])
 @login_required

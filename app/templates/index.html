@@ -32,6 +32,11 @@
     <tr>
         <td>{{ task.name }}</td>
         <td style="white-space: nowrap;">
+            {% if task.favorite %}
+            <a class="icon has-text-warning" title="Remove from favorites" href="{{ url_for('main.favorite', task_id=task.id.hex(), fav=0) }}"><i class="fas fa-star"></i></a>
+            {% else %}
+            <a class="icon has-text-warning" title="Add to favorites" href="{{ url_for('main.favorite', task_id=task.id.hex(), fav=1) }}"><i class="far fa-star"></i></a>
+            {% endif %}
             <a class="icon has-text-info" title="Edit task" href="{{ url_for('main.edit_task', task_id=task.id.hex()) }}"><i class="fas fa-edit"></i></a>
             <a class="icon has-text-danger" title="Delete task" href="{{ url_for('main.delete_task', task_id=task.id.hex()) }}"><i class="fas fa-times"></i></a>
         </td>

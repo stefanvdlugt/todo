@@ -33,6 +33,9 @@ class User(UserMixin, db.Model):
     def get_id(self):
         return self.id.hex()
 
+    def get_tasks(self):
+        return Task.query.filter_by(owner_id=self.id).order_by(Task.favorite.desc(), Task.id.asc())
+
 @login.user_loader
 def load_user(id):
     return User.query.get(bytes.fromhex(id))
@@ -42,6 +45,7 @@ class Task(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     name = db.Column(db.String(100))
     deadline = db.Column(db.DateTime)
+    favorite = db.Column(db.Boolean(), default=False)
 
     def __repr__(self):
         return f"<Task {self.id}: {self.name}>"
