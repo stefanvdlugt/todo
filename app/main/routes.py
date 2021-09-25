@@ -1,9 +1,10 @@
 from flask_login import login_required
 from app.main import main
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, abort
 from flask_login import current_user
 from app.models import Task
 from app import db
+from app.main.forms import TaskEditForm
 
 @main.route('/')
 @main.route('/index')
@@ -25,12 +26,33 @@ def add_task():
 @main.route('/delete_task/<task_id>')
 @login_required
 def delete_task(task_id):
-    task=Task.query.get(int(task_id))
+    try:
+        b = bytes.fromhex(task_id)
+    except:
+        abort(404)
+    task=Task.query.get(b)
     if task is not None and task.owner==current_user:
-        return f"Deleting task {task.id}..."
-    return redirect(url_for('main.index'))
+        db.session.delete(task)
+        db.session.commit()
+        return redirect(url_for('main.index'))
+    else:
+        abort(404)
 
-@main.route('/edit_task/<task_id>')
+@main.route('/edit_task/<task_id>', methods=['POST','GET'])
 @login_required
 def edit_task(task_id):
-    return redirect(url_for('main.index'))
+    try:
+        b = bytes.fromhex(task_id)
+    except:
+        abort(404)
+    task=Task.query.get(b)
+    if task is not None and task.owner==current_user:
+        form = TaskEditForm(taskname=task.name)
+        if form.validate_on_submit():
+            task.name = form.taskname.data
+            db.session.commit()
+            return redirect(url_for('main.index'))
+        else:
+            return render_template('task.html',task=task, form=form)
+    else:
+        abort(404)

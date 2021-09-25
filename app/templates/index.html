@@ -30,8 +30,8 @@
     <tr>
         <td>{{ task.name }}</td>
         <td style="white-space: nowrap;">
-            <a class="icon has-text-info" title="Edit task" href="{{ url_for('main.edit_task', task_id=task.id) }}"><i class="fas fa-edit"></i></a>
-            <a class="icon has-text-danger" title="Delete task" href="{{ url_for('main.delete_task', task_id=task.id) }}"><i class="fas fa-times"></i></a>
+            <a class="icon has-text-info" title="Edit task" href="{{ url_for('main.edit_task', task_id=task.id.hex()) }}"><i class="fas fa-edit"></i></a>
+            <a class="icon has-text-danger" title="Delete task" href="{{ url_for('main.delete_task', task_id=task.id.hex()) }}"><i class="fas fa-times"></i></a>
         </td>
     </tr>
     {% endfor %}

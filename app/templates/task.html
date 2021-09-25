@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero is-primary is-fullheight-with-navbar">
+    <div class="hero-body">
+        <div class="container">
+            <div class="column is-6 is-offset-3">
+                <h3 class="title">Edit task</h3>
+                <div class="box">
+                    {% with messages = get_flashed_messages() %}
+                    {% for message in messages %}
+                    <div class="notification is-danger">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endwith %}
+                    <form action="" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ render_input(form.taskname, icon="fas fa-user") }}
+                        {{ render_button(form.submit, class="is-success") }}
+                    </form>
+                    <br/>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
