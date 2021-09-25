@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<section class="section">
+<h1 class="title">My tasks</h1>
 <form action="{{ url_for('main.add_task') }}" method="post">
     <div class="field has-addons">
         <p class="control has-icons-left is-expanded">
@@ -36,4 +38,5 @@
     </tr>
     {% endfor %}
 </table>
+</section>
 {% endblock %}
