@@ -25,12 +25,18 @@
     <thead>
         <tr>
             <th>Task</th>
+            <th>Due date</th>
             <th style="width:.1%;"></th>
         </tr>
     </thead>
     {% for task in tasks %}
     <tr>
         <td>{{ task.name }}</td>
+        <td>
+            {% if task.deadline %}
+            <span class="utc">{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%SZ') }}</span>
+            {% endif %}
+        </td>
         <td style="white-space: nowrap;">
             {% if task.favorite %}
             <a class="icon has-text-warning" title="Remove from favorites" href="{{ url_for('main.favorite', task_id=task.id.hex(), fav=0) }}"><i class="fas fa-star"></i></a>
@@ -44,4 +50,18 @@
     {% endfor %}
 </table>
 </section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/1.30.1/date_fns.min.js" integrity="sha512-F+u8eWHrfY8Xw9BLzZ8rG/0wIvs0y+JyRJrXjp3VjtFPylAEEGwKbua5Ip/oiVhaTDaDs4eU2Xtsxjs/9ag2bQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $(function(){
+        $('.utc').each(function(){
+            var d = new Date($(this).html());
+            $(this).html(d.toLocaleString({
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }));
+        });
+    });
+</script>
 {% endblock %}

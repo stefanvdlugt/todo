@@ -4,7 +4,19 @@ from flask import render_template, redirect, url_for, flash, request, abort
 from flask_login import current_user
 from app.models import Task
 from app import db
-from app.main.forms import TaskEditForm
+import re
+from app.main.forms import TaskEditForm, re_date, re_time
+from datetime import datetime
+import pytz
+
+def to_utc(datetime, timezone):
+    tz = pytz.timezone(timezone)
+    return tz.normalize(tz.localize(datetime)).astimezone(pytz.utc)
+
+def from_utc(datetime, timezone):
+    tz = pytz.timezone(timezone)
+    return tz.fromutc(datetime)
+
 
 @main.route('/')
 @main.route('/index')
@@ -63,9 +75,33 @@ def edit_task(task_id):
         abort(404)
     task=Task.query.get(b)
     if task is not None and task.owner==current_user:
-        form = TaskEditForm(taskname=task.name)
+        t = dict()
+        if task.deadline is not None:
+            tz = task.saved_timezone or 'UTC'
+            t['timezone'] = tz
+            tlocal = from_utc(task.deadline, tz)
+            t['date'] = tlocal.strftime('%d/%m/%Y')
+            t['time'] = tlocal.strftime('%H:%M')
+
+        form = TaskEditForm(taskname=task.name,due=t)
         if form.validate_on_submit():
+            # Convert user's datetime to UTC
+            if form.due.date.data and form.due.time.data:
+                # Parse timezone, date, and time
+                timezone = form.due.timezone.data
+                ddmmyyyy = re.match(re_date, form.due.date.data).groups()
+                day, month, year = int(ddmmyyyy[0]),int(ddmmyyyy[1]), int(ddmmyyyy[2])
+                hm = re.match(re_time, form.due.time.data).groups()
+                hour,minute = int(hm[0]), int(hm[1])
+                # Convert to a datetime object
+                dt = to_utc(datetime(year,month,day,hour,minute), timezone)
+            else:
+                timezone = None
+                dt = None
+
             task.name = form.taskname.data
+            task.deadline = dt
+            task.saved_timezone = timezone
             db.session.commit()
             return redirect(url_for('main.index'))
         else:
