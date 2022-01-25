@@ -34,7 +34,11 @@ class User(UserMixin, db.Model):
         return self.id.hex()
 
     def get_tasks(self):
-        return Task.query.filter_by(owner_id=self.id).order_by(Task.favorite.desc(), Task.deadline.asc().nulls_last(), Task.id.asc())
+        return Task.query.filter_by(owner_id=self.id).order_by(
+            Task.favorite.desc(),
+            Task.deadline.is_(None),
+            Task.deadline.asc()
+        )
 
 @login.user_loader
 def load_user(id):
@@ -42,7 +46,7 @@ def load_user(id):
 
 class Task(db.Model):
     id = db.Column(db.BINARY(length=16), primary_key=True, default=keygen)
-    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    owner_id = db.Column(db.BINARY(length=16), db.ForeignKey('user.id'))
     name = db.Column(db.String(100))
     deadline = db.Column(db.DateTime)
     saved_timezone = db.Column(db.String(100))
