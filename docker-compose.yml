@@ -1,0 +1,23 @@
+version: '3.1'
+
+services:
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: yes
+      MYSQL_USER: todo
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: todo
+
+  todo:
+    image: todoapp:latest
+    build: .
+    restart: always
+    environment:
+      DATABASE_URL: mysql+pymysql://todo:${MYSQL_PASSWORD}@db/todo
+      SECRET_KEY: ${SECRET_KEY}
+    ports:
+      - "8000:5000"
+
+
