@@ -1,6 +1,8 @@
 from app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+import jwt
+from flask import current_app
 
 from time import time as time_
 from os import urandom
@@ -39,6 +41,27 @@ class User(UserMixin, db.Model):
             Task.deadline.is_(None),
             Task.deadline.asc()
         )
+
+    def generate_token(self, lifespan=600):
+        d = {
+            'id': self.id.hex(),
+            'expires': int(time_()+lifespan),
+        }
+        return jwt.encode(d, current_app.config['SECRET_KEY'], algorithm='HS256')
+
+    @staticmethod
+    def get_from_token(token):
+        try:
+            payload = jwt.decode(token, current_app.config['SECRET_KEY'],
+                                algorithms=['HS256'])
+            id = bytes.fromhex(payload['id'])
+            if time_() > payload['expires']:
+                return None
+        except (jwt.exceptions.InvalidTokenError, KeyError):
+            return None
+        return User.query.get(id)
+        
+
 
 @login.user_loader
 def load_user(id):

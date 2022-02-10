@@ -10,6 +10,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: todo
 
+
   todo:
     image: todoapp:latest
     build: .
@@ -17,6 +18,12 @@ services:
     environment:
       DATABASE_URL: mysql+pymysql://todo:${MYSQL_PASSWORD}@db/todo
       SECRET_KEY: ${SECRET_KEY}
+      MAIL_SERVER: ${MAIL_SERVER}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USE_TLS: ${MAIL_USE_TLS}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_FROM: ${MAIL_FROM}
     ports:
       - "8000:5000"
 
