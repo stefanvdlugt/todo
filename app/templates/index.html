@@ -34,7 +34,7 @@
         <td>{{ task.name }}</td>
         <td>
             {% if task.deadline %}
-            <span class="utc">{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%SZ') }}</span>
+            <span class="utc{% if task.overdue() %} has-text-danger{% endif %}">{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%SZ') }}</span>
             {% endif %}
         </td>
         <td style="white-space: nowrap;">

@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 import jwt
 from flask import current_app
+import datetime
 
 from time import time as time_
 from os import urandom
@@ -77,3 +78,8 @@ class Task(db.Model):
 
     def __repr__(self):
         return f"<Task {self.id}: {self.name}>"
+    
+    def overdue(self):
+        if self.deadline is None:
+            return False
+        return datetime.datetime.utcnow() >= self.deadline
