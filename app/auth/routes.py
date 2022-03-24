@@ -15,9 +15,12 @@ def register():
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
+        user.admin = (User.query.first() is None) # First registered user gets admin status
         db.session.add(user)
         db.session.commit()
         flash(f'Welcome, {form.username.data}, you are now a registered user. Please log in.')
+        if user.admin:
+            flash(f'As you are the first user to register, you have obtained admin rights.')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
 

@@ -21,6 +21,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(32), index=True, unique=True)
     email = db.Column(db.String(256), index=True, unique=True)
     password_hash = db.Column(db.String(128))
+    admin = db.Column(db.Boolean(), default=False)
 
     tasks = db.relationship('Task', backref='owner', lazy='dynamic')
 
