@@ -23,7 +23,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     admin = db.Column(db.Boolean(), default=False)
 
-    tasks = db.relationship('Task', backref='owner', lazy='dynamic')
+    tasks = db.relationship('Task', backref='owner', lazy='dynamic', cascade='all, delete-orphan')
 
     def __repr__(self):
         return f"<User {self.username}>"

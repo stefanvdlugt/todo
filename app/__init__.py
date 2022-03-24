@@ -26,6 +26,9 @@ def create_app(config_class=Config):
     from app.auth import auth
     app.register_blueprint(auth,url_prefix='/auth')
 
+    from app.admin import admin
+    app.register_blueprint(admin,url_prefix='/admin')
+
     login.init_app(app)
 
     mail.init_app(app)
