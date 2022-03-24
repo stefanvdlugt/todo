@@ -1,0 +1,24 @@
+    <tr>
+        <td>
+            {% if task.done %}
+            <a class="icon has-text-success" title="Unmark as done" href="{{ url_for('main.mark_task', task_id=task.id.hex(), status=0) }}"><i class="far fa-check-square"></i></a>
+            {% else %} 
+            <a class="icon has-text-success" title="Mark as done" href="{{ url_for('main.mark_task', task_id=task.id.hex(), status='1') }}"><i class="far fa-square"></i></a>
+            {% endif %}
+        </td>
+        <td>{{ task.name }}</td>
+        <td>
+            {% if task.deadline %}
+            <span class="deadline utc{% if not task.done and task.overdue() %} has-text-danger{% endif %}" data-utc="{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%SZ') }}">{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%SZ') }}</span>
+            {% endif %}
+        </td>
+        <td style="white-space: nowrap;">
+            {% if task.favorite %}
+            <a class="icon has-text-warning" title="Remove from favorites" href="{{ url_for('main.favorite', task_id=task.id.hex(), fav=0) }}"><i class="fas fa-star"></i></a>
+            {% else %}
+            <a class="icon has-text-warning" title="Add to favorites" href="{{ url_for('main.favorite', task_id=task.id.hex(), fav=1) }}"><i class="far fa-star"></i></a>
+            {% endif %}
+            <a class="icon has-text-info" title="Edit task" href="{{ url_for('main.edit_task', task_id=task.id.hex()) }}"><i class="fas fa-edit"></i></a>
+            <a class="icon has-text-danger" title="Delete task" href="{{ url_for('main.delete_task', task_id=task.id.hex()) }}"><i class="fas fa-times"></i></a>
+        </td>
+    </tr>

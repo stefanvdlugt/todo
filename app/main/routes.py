@@ -35,6 +35,24 @@ def add_task():
         db.session.commit()
     return redirect(url_for('main.index'))
 
+@main.route('/mark_task/<task_id>/<status>')
+@login_required
+def mark_task(task_id,status):
+    try:
+        b = bytes.fromhex(task_id)
+        assert(status=='0' or status=='1')
+    except:
+        abort(404)
+    task = Task.query.get(b)
+    if task is not None and task.owner==current_user:
+        task.done = (status=='1')
+        db.session.commit()
+        return(redirect(url_for('main.index')))
+    else:
+        abort(404)
+        
+
+
 @main.route('/delete_task/<task_id>')
 @login_required
 def delete_task(task_id):

@@ -75,6 +75,7 @@ class Task(db.Model):
     deadline = db.Column(db.DateTime)
     saved_timezone = db.Column(db.String(100))
     favorite = db.Column(db.Boolean(), default=False)
+    done = db.Column(db.Boolean(), default=False)
 
     def __repr__(self):
         return f"<Task {self.id}: {self.name}>"
