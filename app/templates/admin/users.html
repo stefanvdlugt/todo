@@ -18,12 +18,37 @@
             <th style="width:.1%;"></th>
         </tr>
     </thead>
-    {% for user in users %}
-    <tr>
+    {% for user,delform,maform in rows %}
+    <tr{% if user.admin %} class="has-background-danger-light"{% endif %}>
         <td>{{ user.username }}</td>
         <td>{{ user.email }}</td>
         <td style="white-space: nowrap;">
-            <a class="icon has-text-danger confirm" data-username="{{ user.username }}" title="Delete user" href="{{ url_for('admin.delete_user', user_id=user.id.hex()) }}"><i class="fas fa-times"></i></a>
+            <div class="field is-grouped">
+                <form method="POST" action="{{ url_for('admin.make_admin') }}">
+                    {{ maform.hidden_tag() }}
+                    {% if not user.admin %}
+                    <button type="submit" title="Make admin" class="button confirm-make-admin" data-username="{{ user.username }}">
+                        <span class="icon is-small">
+                            <i class="fas fa-user-cog"></i>
+                        </span>
+                    </button>
+                    {% else %}
+                    <button type="submit" title="Remove admin status" class="button confirm-remove-admin" data-username="{{ user.username }}">
+                        <span class="icon is-small">
+                            <i class="fas fa-user-minus"></i>
+                        </span>
+                    </button>
+                    {% endif %}
+                </form>
+                <form method="POST" action="{{ url_for('admin.delete_user') }}">
+                    {{ delform.hidden_tag() }}
+                    <button type="submit" title="Delete user" class="button confirm-delete" data-username="{{ user.username }}">
+                        <span class="icon is-small">
+                            <i class="fas fa-trash"></i>
+                        </span>
+                    </button>
+                </form>
+            </div>
         </td>
     </tr>
     {% endfor %}
@@ -31,9 +56,14 @@
 </section>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/1.30.1/date_fns.min.js" integrity="sha512-F+u8eWHrfY8Xw9BLzZ8rG/0wIvs0y+JyRJrXjp3VjtFPylAEEGwKbua5Ip/oiVhaTDaDs4eU2Xtsxjs/9ag2bQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-    $('.confirm').on('click', function(){
-            //return confirm("Are you sure?")
+    $('.confirm-delete').on('click', function(){
             return confirm('Are you sure you wish to delete user "' + $(this).data('username') + '" and all their tasks?');
+    });
+    $('.confirm-make-admin').on('click', function(){
+            return confirm('Are you sure you wish to grant admin rights to user "' + $(this).data('username') + '"?');
+    });
+    $('.confirm-remove-admin').on('click', function(){
+            return confirm('Are you sure you wish to revoke admin rights from user "' + $(this).data('username') + '"?');
     });
 </script>
 {% endblock %}

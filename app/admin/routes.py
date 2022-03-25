@@ -3,35 +3,65 @@ from app import db
 from flask import render_template, redirect, url_for, flash, request, abort
 from flask_login import current_user, login_user, logout_user
 #from app.auth.forms import LoginForm, PasswordResetForm, RegistrationForm, RequestPasswordResetForm
+from app.admin.forms import DeleteUserForm, MakeAdminForm
 from app.models import User
 from werkzeug.urls import url_parse
 
 @admin.route('/users')
 @admin_required
 def users():
-    page = request.args.get('page',1,type=int)
     userlist = User.query.order_by(User.username).all()
-    return render_template('admin/users.html', users=userlist)
+    rows = []
+    for user in userlist:
+        userid = user.id.hex()
+        rows.append((
+            user, 
+            DeleteUserForm(userid=userid),
+            MakeAdminForm(userid=userid, status='0' if user.admin else '1')
+        ))
+    return render_template('admin/users.html', rows=rows)
 
-@admin.route('/delete_user/<user_id>')
+@admin.route('/delete_user', methods=['POST'])
 @admin_required
-def delete_user(user_id):
-    try:
-        b = bytes.fromhex(user_id)
-    except:
-        print("Cannot convert to bytes.")
-        abort(404)
-    user = User.query.get(b)
-    if user is not None:
-        if user == current_user:
-            flash('It is impossible to delete the current user.')
+def delete_user():
+    form = DeleteUserForm()
+    if form.validate_on_submit():
+        b = bytes.fromhex(form.userid.data)
+        user = User.query.get(b)
+        if user is not None:
+            if user == current_user:
+                flash('It is impossible to delete the current user.')
+            else:
+                db.session.delete(user)
+                db.session.commit()
+                flash(f'Successfully deleted user {user.username}.')
             return redirect(url_for('admin.users'))
         else:
-            db.session.delete(user)
-            db.session.commit()
-            flash(f'Successfully deleted user {user.username}.')
-            return redirect(url_for('admin.users'))
+            abort(404)
     else:
-        print("User not found.")
-        abort(404)
+        return redirect(url_for('admin.users'))
+    
         
+@admin.route('/make_admin',methods=['POST'])
+@admin_required
+def make_admin():
+    form = MakeAdminForm()
+    if form.validate_on_submit():
+        b = bytes.fromhex(form.userid.data)
+        user = User.query.get(b)
+        if user is not None:
+            if user == current_user:
+                flash("You cannot change your own admin status.")
+            else:
+                status = form.status.data
+                user.admin = (status=='1')
+                db.session.commit()
+                if status=='1':
+                    flash(f"User '{user.username}' is now an admin.")
+                else:
+                    flash(f"User '{user.username}' is no longer an admin.")
+            return(redirect(url_for('admin.users')))
+        else:
+            abort(404)
+    else:
+        return redirect(url_for('admin.users'))
