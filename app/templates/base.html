@@ -25,6 +25,11 @@
             
             // Clicking anchors with "form-submit" tag submits the form they're part of.
             $('.form-submit').on('click', function(){
+                if ($(this).data('confirm')) {
+                    if (confirm($(this).data('confirm'))==false) {
+                        return false
+                    }
+                }
                 $(this).closest('form').submit();
             });
         });
