@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import StringField, SubmitField, SelectField, IntegerField, FormField
+from wtforms.fields import StringField, SubmitField, SelectField, IntegerField, FormField, HiddenField
 from wtforms.validators import DataRequired, Length, Regexp, ValidationError
 import re
 import datetime, pytz
@@ -59,3 +59,14 @@ class TaskEditForm(FlaskForm):
     due = FormField(DateTimeForm, label='Due date')
     submit = SubmitField('Save')
 
+class DeleteTaskForm(FlaskForm):
+    taskid = HiddenField(validators=[DataRequired(), IsHex()])
+
+class FavoriteTaskForm(FlaskForm):
+    taskid = HiddenField(validators=[DataRequired(), IsHex()])
+    status = HiddenField(validators=[DataRequired(), Regexp('^[01]$')])
+    
+class MarkTaskForm(FlaskForm):
+    taskid = HiddenField(validators=[DataRequired(), IsHex()])
+    status = HiddenField(validators=[DataRequired(), Regexp('^[01]$')])
+    

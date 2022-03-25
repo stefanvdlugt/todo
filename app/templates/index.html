@@ -30,7 +30,7 @@
             <th style="width:.1%;"></th>
         </tr>
     </thead>
-    {% for task in tasks %}
+    {% for task,markform,favform,delform in rows %}
     {% if not task.done %}
     {% include '_task_line.html' %}
     {% endif %}
@@ -49,7 +49,7 @@
             <th style="width:.1%;"></th>
         </tr>
     </thead>
-    {% for task in tasks %}
+    {% for task,markform,favform,delform in rows %}
     {% if task.done %}
     {% include '_task_line.html' %}
     {% endif %}

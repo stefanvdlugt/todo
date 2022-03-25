@@ -1,10 +1,21 @@
     <tr>
         <td>
-            {% if task.done %}
-            <a class="icon has-text-success" title="Unmark as done" href="{{ url_for('main.mark_task', task_id=task.id.hex(), status=0) }}"><i class="far fa-check-square"></i></a>
-            {% else %} 
-            <a class="icon has-text-success" title="Mark as done" href="{{ url_for('main.mark_task', task_id=task.id.hex(), status='1') }}"><i class="far fa-square"></i></a>
-            {% endif %}
+            <form method="POST" action="{{ url_for('main.mark_task') }}">
+                {{ markform.hidden_tag() }}
+                {% if not task.done %}
+                <button type="submit" title="Mark as done" class="button">
+                    <span class="icon is-small has-text-success">
+                        <i class="far fa-square"></i>
+                    </span>
+                </button>
+                {% else %}
+                <button type="submit" title="Mark as to-do" class="button">
+                    <span class="icon is-small has-text-success">
+                        <i class="fas fa-check-square"></i>
+                    </span>
+                </button>
+                {% endif %}
+            </form>
         </td>
         <td>{{ task.name }}</td>
         <td>
@@ -13,12 +24,38 @@
             {% endif %}
         </td>
         <td style="white-space: nowrap;">
-            {% if task.favorite %}
-            <a class="icon has-text-warning" title="Remove from favorites" href="{{ url_for('main.favorite', task_id=task.id.hex(), fav=0) }}"><i class="fas fa-star"></i></a>
-            {% else %}
-            <a class="icon has-text-warning" title="Add to favorites" href="{{ url_for('main.favorite', task_id=task.id.hex(), fav=1) }}"><i class="far fa-star"></i></a>
-            {% endif %}
-            <a class="icon has-text-info" title="Edit task" href="{{ url_for('main.edit_task', task_id=task.id.hex()) }}"><i class="fas fa-edit"></i></a>
-            <a class="icon has-text-danger" title="Delete task" href="{{ url_for('main.delete_task', task_id=task.id.hex()) }}"><i class="fas fa-times"></i></a>
+            <div class="field is-grouped">
+                <form method="POST" action="{{ url_for('main.favorite') }}">
+                    {{ favform.hidden_tag() }}
+                    {% if not task.favorite %}
+                    <button type="submit" title="Remove from favorites" class="button">
+                        <span class="icon is-small has-text-warning">
+                            <i class="far fa-star"></i>
+                        </span>
+                    </button>
+                    {% else %}
+                    <button type="submit" title="Add to favorites" class="button">
+                        <span class="icon is-small has-text-warning">
+                            <i class="fas fa-star"></i>
+                        </span>
+                    </button>
+                    {% endif %}
+                </form>
+                <form method="POST" action="{{ url_for('main.edit_task', task_id = task.id.hex()) }}">
+                    <button type="submit" title="Edit task" class="button">
+                        <span class="icon is-small has-text-info">
+                            <i class="fas fa-edit"></i>
+                        </span>
+                    </button>
+                </form>
+                <form method="POST" action="{{ url_for('main.delete_task') }}">
+                    {{ delform.hidden_tag() }}
+                    <button type="submit" title="Delete task" class="button">
+                        <span class="icon is-small has-text-danger">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </button>
+                </form>
+            </div>
         </td>
     </tr>

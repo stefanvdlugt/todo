@@ -5,7 +5,7 @@ from flask_login import current_user
 from app.models import Task
 from app import db
 import re
-from app.main.forms import TaskEditForm, re_date, re_time
+from app.main.forms import TaskEditForm, re_date, re_time, DeleteTaskForm, FavoriteTaskForm, MarkTaskForm
 from datetime import datetime
 import pytz
 
@@ -23,7 +23,13 @@ def from_utc(datetime, timezone):
 @login_required
 def index():
     tasks = current_user.get_tasks()
-    return render_template('index.html',tasks=tasks)
+    rows = [ (
+        task,
+        MarkTaskForm(taskid=task.id.hex(), status='0' if task.done else '1'),
+        FavoriteTaskForm(taskid=task.id.hex(), status='0' if task.favorite else '1'),
+        DeleteTaskForm(taskid=task.id.hex()),
+    ) for task in tasks ]
+    return render_template('index.html',rows=rows)
 
 @main.route('/add_task', methods=['POST'])
 @login_required
@@ -35,54 +41,45 @@ def add_task():
         db.session.commit()
     return redirect(url_for('main.index'))
 
-@main.route('/mark_task/<task_id>/<status>')
+@main.route('/mark_task', methods=['POST'])
 @login_required
-def mark_task(task_id,status):
-    try:
-        b = bytes.fromhex(task_id)
-        assert(status=='0' or status=='1')
-    except:
-        abort(404)
-    task = Task.query.get(b)
-    if task is not None and task.owner==current_user:
-        task.done = (status=='1')
-        db.session.commit()
-        return(redirect(url_for('main.index')))
-    else:
-        abort(404)
-        
+def mark_task():
+    form = MarkTaskForm()
+    if form.validate_on_submit():
+        b = bytes.fromhex(form.taskid.data)
+        task = Task.query.get(b)
+        if task is not None and task.owner==current_user:
+            task.done = (form.status.data=='1')
+            db.session.commit()
+            return(redirect(url_for('main.index')))
+    abort(404)
 
-
-@main.route('/delete_task/<task_id>')
+@main.route('/delete_task', methods=['POST'])
 @login_required
-def delete_task(task_id):
-    try:
-        b = bytes.fromhex(task_id)
-    except:
-        abort(404)
-    task=Task.query.get(b)
-    if task is not None and task.owner==current_user:
-        db.session.delete(task)
-        db.session.commit()
-        return redirect(url_for('main.index'))
-    else:
-        abort(404)
+def delete_task():
+    form = DeleteTaskForm()
+    if form.validate_on_submit():
+        b = bytes.fromhex(form.taskid.data)
+        task = Task.query.get(b)
+        if task is not None and task.owner==current_user:
+            db.session.delete(task)
+            db.session.commit()
+            return redirect(url_for('main.index'))
+        else:
+            abort(404)
 
-@main.route('/favorite/<task_id>/<fav>')
+@main.route('/favorite', methods=['POST'])
 @login_required
-def favorite(task_id,fav):
-    try:
-        b = bytes.fromhex(task_id)
-    except:
-        abort(404)
-    task=Task.query.get(b)
-    if task is not None and task.owner==current_user:
-        task.favorite = bool(int(fav))
-        db.session.commit()
-        return(redirect(url_for('main.index')))
-    else:
-        abort(404)
-
+def favorite():
+    form = FavoriteTaskForm()
+    if form.validate_on_submit():
+        b = bytes.fromhex(form.taskid.data)
+        task = Task.query.get(b)
+        if task is not None and task.owner==current_user:
+            task.favorite = (form.status.data=='1')
+            db.session.commit()
+            return(redirect(url_for('main.index')))
+    abort(404)
 
 @main.route('/edit_task/<task_id>', methods=['POST','GET'])
 @login_required
