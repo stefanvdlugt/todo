@@ -11,6 +11,16 @@ re_time = r'^([01]?\d|2[0-3]):([0-5]\d)$'
 
 tz_choices = [('','Select...')] + [(s,s.replace('_',' ')) for s in pytz.all_timezones]
 
+class IsHex(object):
+    def __init__(self, message="Not a valid hexadecimal string."):
+        self.message = message
+
+    def __call__(self,form,field):
+        try:
+            bytes.fromhex(field.data)
+        except:
+            raise ValidationError(self.message)
+
 class DateTimeForm(FlaskForm):
     date = StringField('Date', render_kw={'placeholder': 'dd/mm/yyyy', 'class': 'input'})
     time = StringField('Time', render_kw={'placeholder': 'hh:mm', 'class': 'input'})
