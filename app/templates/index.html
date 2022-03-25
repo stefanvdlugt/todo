@@ -81,5 +81,10 @@
             }));
         });
     });
+    $('.confirm-delete').on('click', function(){
+        if (confirm('Are you sure you want to delete this task?')==true) {
+            $(this).parent().submit();
+        }
+    })
 </script>
 {% endblock %}

@@ -22,6 +22,11 @@
                 $(".navbar-menu").toggleClass("is-active");
 
             });
+            
+            // Clicking anchors with "form-submit" tag submits the form they're part of.
+            $('.form-submit').on('click', function(){
+                $(this).closest('form').submit();
+            });
         });
     </script>
 

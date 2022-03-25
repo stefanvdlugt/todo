@@ -3,11 +3,11 @@
             <form method="POST" action="{{ url_for('main.mark_task') }}">
                 {{ markform.hidden_tag() }}
                 {% if not task.done %}
-                <a href="javascript:;" onclick="parentNode.submit();" class="icon has-text-success" title="Mark as done">
+                <a class="icon has-text-success form-submit" title="Mark as done">
                     <i class="far fa-square"></i>
                 </a>
                 {% else %}
-                <a href="javascript:;" onclick="parentNode.submit();" class="icon has-text-success" title="Move to current tasks">
+                <a class="icon has-text-success form-submit" title="Move to current tasks">
                     <i class="far fa-check-square"></i>
                 </a>
                 {% endif %}
@@ -24,11 +24,11 @@
                 <form method="POST" action="{{ url_for('main.favorite') }}">
                     {{ favform.hidden_tag() }}
                     {% if not task.favorite %}
-                    <a href="javascript:;" onclick="parentNode.submit();" class="icon has-text-warning" title="Add to favorites">
+                    <a class="icon has-text-warning form-submit" title="Add to favorites">
                         <i class="far fa-star"></i>
                     </a>
                     {% else %}
-                    <a href="javascript:;" onclick="parentNode.submit();" class="icon has-text-warning" title="Remove from favorites">
+                    <a class="icon has-text-warning form-submit" title="Remove from favorites">
                         <i class="fas fa-star"></i>
                     </a>
                     {% endif %}
@@ -38,7 +38,7 @@
                 </a>
                 <form method="POST" action="{{ url_for('main.delete_task') }}">
                     {{ delform.hidden_tag() }}
-                    <a href="javascript:;" onclick="parentNode.submit();" class="icon has-text-danger" title="Delete task">
+                    <a class="icon has-text-danger confirm-delete" title="Delete task">
                         <i class="far fa-times"></i>
                     </a>
                 </form>
