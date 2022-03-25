@@ -47,6 +47,18 @@
             </div>
 
             <div class="navbar-end">
+                {% if current_user.is_authenticated and current_user.admin %}
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        Admin
+                    </a>
+                    <div class="navbar-dropdown">
+                        <a class="navbar-item" href="{{ url_for('admin.users') }}">
+                            Users
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
                 <div class="navbar-item">
                     <div class="buttons">
                         {% if current_user.is_authenticated %}
