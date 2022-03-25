@@ -3,17 +3,13 @@
             <form method="POST" action="{{ url_for('main.mark_task') }}">
                 {{ markform.hidden_tag() }}
                 {% if not task.done %}
-                <button type="submit" title="Mark as done" class="button">
-                    <span class="icon is-small has-text-success">
-                        <i class="far fa-square"></i>
-                    </span>
-                </button>
+                <a href="javascript:;" onclick="parentNode.submit();" class="icon has-text-success" title="Mark as done">
+                    <i class="far fa-square"></i>
+                </a>
                 {% else %}
-                <button type="submit" title="Mark as to-do" class="button">
-                    <span class="icon is-small has-text-success">
-                        <i class="fas fa-check-square"></i>
-                    </span>
-                </button>
+                <a href="javascript:;" onclick="parentNode.submit();" class="icon has-text-success" title="Move to current tasks">
+                    <i class="far fa-check-square"></i>
+                </a>
                 {% endif %}
             </form>
         </td>
@@ -28,33 +24,23 @@
                 <form method="POST" action="{{ url_for('main.favorite') }}">
                     {{ favform.hidden_tag() }}
                     {% if not task.favorite %}
-                    <button type="submit" title="Remove from favorites" class="button">
-                        <span class="icon is-small has-text-warning">
-                            <i class="far fa-star"></i>
-                        </span>
-                    </button>
+                    <a href="javascript:;" onclick="parentNode.submit();" class="icon has-text-warning" title="Add to favorites">
+                        <i class="far fa-star"></i>
+                    </a>
                     {% else %}
-                    <button type="submit" title="Add to favorites" class="button">
-                        <span class="icon is-small has-text-warning">
-                            <i class="fas fa-star"></i>
-                        </span>
-                    </button>
+                    <a href="javascript:;" onclick="parentNode.submit();" class="icon has-text-warning" title="Remove from favorites">
+                        <i class="fas fa-star"></i>
+                    </a>
                     {% endif %}
                 </form>
-                <form method="POST" action="{{ url_for('main.edit_task', task_id = task.id.hex()) }}">
-                    <button type="submit" title="Edit task" class="button">
-                        <span class="icon is-small has-text-info">
-                            <i class="fas fa-edit"></i>
-                        </span>
-                    </button>
-                </form>
+                <a href="{{ url_for('main.edit_task', task_id=task.id.hex()) }}" class="icon has-text-info" title="Edit task">
+                    <i class="fas fa-edit"></i>
+                </a>
                 <form method="POST" action="{{ url_for('main.delete_task') }}">
                     {{ delform.hidden_tag() }}
-                    <button type="submit" title="Delete task" class="button">
-                        <span class="icon is-small has-text-danger">
-                            <i class="fas fa-times"></i>
-                        </span>
-                    </button>
+                    <a href="javascript:;" onclick="parentNode.submit();" class="icon has-text-danger" title="Delete task">
+                        <i class="far fa-times"></i>
+                    </a>
                 </form>
             </div>
         </td>
