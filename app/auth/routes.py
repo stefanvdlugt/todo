@@ -6,11 +6,15 @@ from app.auth.forms import LoginForm, PasswordResetForm, RegistrationForm, Reque
 from app.models import User
 from werkzeug.urls import url_parse
 from app.auth.email import send_password_reset_email
+from app.models import GlobalSetting
 
 @auth.route('/register',methods=['GET','POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
+    if GlobalSetting.get('enableRegistration')==False:
+        flash('The administrator has disabled the registration of new users.')
+        return redirect(url_for('auth.login'))
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)

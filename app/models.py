@@ -4,6 +4,7 @@ from flask_login import UserMixin
 import jwt
 from flask import current_app
 import datetime
+import json
 
 from time import time as time_
 from os import urandom
@@ -85,3 +86,33 @@ class Task(db.Model):
         if self.deadline is None:
             return False
         return datetime.datetime.utcnow() >= self.deadline
+
+class GlobalSetting(db.Model):
+    key = db.Column(db.String(32), primary_key=True)
+    value = db.Column(db.String(255))
+    
+    default = {
+        'enableRegistration': True,
+    }
+
+    @classmethod
+    def get(cls,key):
+        row = cls.query.get(key)
+        if row is None:
+            value = cls.default.get(key)
+        else:
+            value = json.loads(row.value)
+        return value
+        
+    @classmethod
+    def set(cls,key,value):
+        # check if setting is already in database
+        row = cls.query.get(key)
+        if row is None:
+            # create new row
+            row = cls(key=key, value=json.dumps(value))
+            db.session.add(row)
+        else:
+            row.value = json.dumps(value)
+        db.session.commit()
+        

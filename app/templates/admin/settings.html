@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero is-primary is-fullheight-with-navbar">
+    <div class="hero-body">
+        <div class="container">
+            <div class="column is-6 is-offset-3">
+                <h3 class="title">Global settings</h3>
+                <div class="box">
+                    {% with messages = get_flashed_messages() %}
+                    {% for message in messages %}
+                    <div class="notification is-danger">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endwith %}
+                    <form action="" method="post" autocomplete="off">
+                        {{ form.hidden_tag() }}
+                        <div class="field">
+                            {{ form.enableregistration.label(class_="label") }}
+                            <div class="control">
+                                <div class="select">
+                                    {{ form.enableregistration }}
+                                </div>
+                            </div>
+                        </div>
+                        {{ render_button(form.submit, class="is-primary") }}
+                    </form>
+                    <br/>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(function() {
+        $('.tzselect').each(function(i){
+            if ( $(this).val() == '' ){
+                var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                if ($(this).children().filter(function(i,o){ return o.value === tz; }).length > 0){
+                    $(this).val(tz);
+                    $(this).find('option[value=""]').remove();
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+

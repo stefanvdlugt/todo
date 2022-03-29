@@ -3,8 +3,8 @@ from app import db
 from flask import render_template, redirect, url_for, flash, request, abort
 from flask_login import current_user, login_user, logout_user
 #from app.auth.forms import LoginForm, PasswordResetForm, RegistrationForm, RequestPasswordResetForm
-from app.admin.forms import DeleteUserForm, MakeAdminForm
-from app.models import User
+from app.admin.forms import DeleteUserForm, MakeAdminForm, SettingsForm
+from app.models import User, GlobalSetting
 from werkzeug.urls import url_parse
 
 @admin.route('/users')
@@ -65,3 +65,14 @@ def make_admin():
             abort(404)
     else:
         return redirect(url_for('admin.users'))
+    
+@admin.route('/settings', methods=['GET','POST'])
+@admin_required
+def settings():
+    form = SettingsForm(
+        enableregistration = "1" if GlobalSetting.get('enableRegistration') else "0"
+    )
+    if form.validate_on_submit():
+        GlobalSetting.set('enableRegistration', form.enableregistration.data == "1")
+        return redirect(url_for('admin.settings'))
+    return render_template('admin/settings.html', form=form)

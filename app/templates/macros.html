@@ -33,7 +33,7 @@
 
 {% macro render_button(field,class="") %}
 {% set class = "button " ~ class %}
-{{ field(class_=class) }}
+<div class="field"><div class="control">{{ field(class_=class) }}</div></div>
 {% endmacro %}
 
 
