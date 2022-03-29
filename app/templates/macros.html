@@ -1,16 +1,55 @@
-{% macro render_input(field, icon="") %}
+{% macro render_field(field, icon="", style="", class="", showlabel=True) %}
 <div class="field">
-    {% set c = "input" %}
     {% if field.errors %}
-        {% set c = c ~ " is-danger" %}
+        {% set style = style ~ " is-danger" %}
     {% endif %}
-    {{ field.label(class_="label") }}
+    {% if field.type in ("StringField", "DateField", "DateTimeField", "DecimalField", "IntegerField", "FloatField", "PasswordField") %}
+    {% if showlabel %}{{ field.label(class_="label") }}{% endif %}
     <div class="control {% if icon %}has-icons-left{% endif %}">
-        {{ field(class_=c) }}
+        {{ field(class_="input "~style~" "~class) }}
         {% if icon %}
         <span class="icon is-small is-left"><i class="{{ icon }}"></i></span>
         {% endif %}
     </div>
+    {% set dc = "input" %}
+    {% elif field.type in ("TextAreaField",) %}
+    {% if showlabel %}{{ field.label(class_="label") }}{% endif %}
+    <div class="control">
+        {{ field(class_="textarea "~style~" "~class) }}
+    </div>
+    {% set dc = "textarea" %}
+    {% elif field.type in ("SelectField", "SelectMultipleField") %}
+    {% if showlabel %}{{ field.label(class_="label") }}{% endif %}
+    <div class="control {% if icon %}has-icons-left {% endif %}">
+        <div class="select {{ style }}">
+            {{ field(class_=class) }}
+            </div>
+        {% if icon %}
+        <span class="icon is-small is-left"><i class="{{ icon }}"></i></span>
+        {% endif %}
+    </div>
+    {% set dc = "select" %}
+    {% elif field.type in ("BooleanField",) %}
+    <div class="control">
+        <label class="checkbox">
+            {{ field(class_=class) }} {{ field.label }}
+        </label>
+    </div>
+    {% set dc = "checkbox" %}
+    {% elif field.type in ("RadioField",) %}
+    {% if showlabel %}{{ field.label(class_="label") }}{% endif %}
+    <div class="control">
+        {% for subfield in field %}
+        {{ subfield }} {{ subfield.label }}
+        {% endfor %}
+    </div>
+    {% set dc = "radio" %}
+    {% elif field.type in ("SubmitField",) %}
+    <div class="control">
+        {{ field(class_="button "~style~" "~class) }}
+    </div>
+    {% set dc = "button" %}
+    {% endif %}
     {% if field.errors %}
     <p class="help is-danger">
         {% for error in field.errors %}
@@ -20,20 +59,3 @@
     {% endif %}
 </div>
 {% endmacro %}
-
-{% macro render_checkbox(field) %}
-<div class="field">
-    <div class="control">
-        <label class="checkbox">
-            {{ field }} {{ field.label.text }}
-        </label>
-    </div>
-</div>
-{% endmacro %}
-
-{% macro render_button(field,class="") %}
-{% set class = "button " ~ class %}
-<div class="field"><div class="control">{{ field(class_=class) }}</div></div>
-{% endmacro %}
-
-

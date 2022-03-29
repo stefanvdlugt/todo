@@ -16,10 +16,10 @@
                     {% endwith %}
                     <form action="" method="post">
                         {{ form.hidden_tag() }}
-                        {{ render_input(form.username, icon="fas fa-user") }}
-                        {{ render_input(form.password, icon="fas fa-key") }}
-                        {{ render_checkbox(form.remember_me) }}
-                        {{ render_button(form.submit, class="is-success") }}
+                        {{ render_field(form.username, icon="fas fa-user") }}
+                        {{ render_field(form.password, icon="fas fa-key") }}
+                        {{ render_field(form.remember_me) }}
+                        {{ render_field(form.submit, style="is-success") }}
                     </form>
                     <br/>
                     {% if enableRegistration %}

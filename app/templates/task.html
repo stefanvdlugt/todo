@@ -16,45 +16,17 @@
                     {% endwith %}
                     <form action="" method="post">
                         {{ form.hidden_tag() }}
-                        {{ render_input(form.taskname, icon="fas fa-edit") }}
+                        {{ render_field(form.taskname, icon="fas fa-edit") }}
                         {{ form.due.hidden_tag() }}
                         <div class="label">
                             {{ form.due.label(class_="label") }}
                         </div>
                         <div class="field has-addons">
-                            <div class="field">
-                                {{ form.due.date(class_="input" + (" is-danger" if form.due.date.errors else "")) }}
-                                {% if form.due.date.errors %}
-                                <p class="help is-danger">
-                                    {% for error in form.due.date.errors %}
-                                    [{{ error }}]
-                                    {% endfor %}
-                                </p>
-                                {% endif %}
-                            </div>
-                            <div class="field">
-                                {{ form.due.time(class_="input" + (" is-danger" if form.due.time.errors else "")) }}
-                                {% if form.due.time.errors %}
-                                <p class="help is-danger">
-                                    {% for error in form.due.time.errors %}
-                                    [{{ error }}]
-                                    {% endfor %}
-                                </p>
-                                {% endif %}
-                            </div>
+                            {{ render_field(form.due.date, showlabel=False) }}
+                            {{ render_field(form.due.time, showlabel=False) }}
                         </div>
-                        <div class="field">
-                            {{ form.due.timezone.label(class_="label") }}
-                            <div class="control has-icons-left">
-                            <div class="select{% if form.due.timezone.errors %} is-danger{% endif %}">
-                            {{ form.due.timezone(class_="input tzselect") }}
-                            </div>
-                            <div class="icon is-small is-left">
-                                <i class="fas fa-globe"></i>
-                            </div>
-                            </div>
-                        </div>
-                        {{ render_button(form.submit, class="is-success") }}
+                        {{ render_field(form.due.timezone, icon="fas fa-globe", class="tzselect") }}
+                        {{ render_field(form.submit, class="is-success") }}
                     </form>
                     <br/>
                 </div>

@@ -16,15 +16,8 @@
                     {% endwith %}
                     <form action="" method="post" autocomplete="off">
                         {{ form.hidden_tag() }}
-                        <div class="field">
-                            {{ form.enableregistration.label(class_="label") }}
-                            <div class="control">
-                                <div class="select">
-                                    {{ form.enableregistration }}
-                                </div>
-                            </div>
-                        </div>
-                        {{ render_button(form.submit, class="is-primary") }}
+                        {{ render_field(form.enableregistration) }}
+                        {{ render_field(form.submit, style="is-primary") }}
                     </form>
                     <br/>
                 </div>
