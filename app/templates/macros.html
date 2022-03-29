@@ -1,5 +1,5 @@
-{% macro render_field(field, icon="", style="", class="", showlabel=True) %}
-<div class="field">
+{% macro render_field(field, icon="", style="", class="", showlabel=True, fieldtag=True) %}
+{% if fieldtag %}<div class="field">{% endif %}
     {% if field.errors %}
         {% set style = style ~ " is-danger" %}
     {% endif %}
@@ -57,5 +57,5 @@
         {% endfor %}
     </p>
     {% endif %}
-</div>
+{% if fieldtag %}</div>{% endif %}
 {% endmacro %}

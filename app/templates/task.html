@@ -22,8 +22,8 @@
                             {{ form.due.label(class_="label") }}
                         </div>
                         <div class="field has-addons">
-                            {{ render_field(form.due.date, showlabel=False) }}
-                            {{ render_field(form.due.time, showlabel=False) }}
+                            {{ render_field(form.due.date, showlabel=False, fieldtag=False) }}
+                            {{ render_field(form.due.time, showlabel=False, fieldtag=False) }}
                         </div>
                         {{ render_field(form.due.timezone, icon="fas fa-globe", class="tzselect") }}
                         {{ render_field(form.submit, class="is-success") }}
