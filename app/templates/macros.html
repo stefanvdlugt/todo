@@ -45,8 +45,16 @@
     </div>
     {% set dc = "radio" %}
     {% elif field.type in ("SubmitField",) %}
+    {% set icon=icon or '' %}
     <div class="control">
-        {{ field(class_="button "~style~" "~class) }}
+        <button class="button {{style}} {{class}}" type="submit" name="{{field.name|safe}}" id="{{field.id|safe}}" value="{{field.label.text|safe}}">
+            {% if icon %}
+            <span class="icon is-small">
+                <i class="{{ icon }}"></i>
+            </span>
+            {% endif %}
+            <span>{{ field.label }}</span>
+        </button>
     </div>
     {% set dc = "button" %}
     {% endif %}
