@@ -1,0 +1,8 @@
+Dear {{ user.username }},
+
+You are receiving this message as a reminder for your task '{{ task.name }}'{% if task.deadline %} with deadline {{ task.get_time_string() }}{% endif %}.
+
+To edit this task, use the following link:
+{{ url_for('main.edit_task', task_id = task.id.hex()) }}
+To view all your tasks, go to:
+{{ url_for('main.index') }}

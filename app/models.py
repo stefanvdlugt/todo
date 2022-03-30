@@ -5,6 +5,7 @@ import jwt
 from flask import current_app
 import datetime
 import json
+import pytz
 
 from time import time as time_
 from os import urandom
@@ -65,7 +66,6 @@ class User(UserMixin, db.Model):
         return User.query.get(id)
         
 
-
 @login.user_loader
 def load_user(id):
     return User.query.get(bytes.fromhex(id))
@@ -78,14 +78,38 @@ class Task(db.Model):
     saved_timezone = db.Column(db.String(100))
     favorite = db.Column(db.Boolean(), default=False)
     done = db.Column(db.Boolean(), default=False)
+    
+    reminders = db.relationship('Reminder', backref='task', lazy='dynamic', cascade='all, delete-orphan')
 
     def __repr__(self):
-        return f"<Task {self.id}: {self.name}>"
+        return f"<Task {self.name}>"
     
     def overdue(self):
         if self.deadline is None:
             return False
         return datetime.datetime.utcnow() >= self.deadline
+    
+    def get_reminders(self):
+        return Reminder.query.filter_by(task_id=self.id).order_by(Reminder.time.asc())
+    
+    def get_time_string(self):
+        if self.saved_timezone:
+            tz = pytz.timezone(self.saved_timezone)
+        else:
+            tz = pytz.utc
+        dt = tz.fromutc(self.deadline)
+        return dt.strftime('%d-%m-%Y at %H:%M') + f" ({tz.zone})"
+
+    
+class Reminder(db.Model):
+    id = db.Column(db.BINARY(length=16), primary_key=True, default=keygen)
+    task_id = db.Column(db.BINARY(length=16), db.ForeignKey('task.id'))
+    time = db.Column(db.DateTime)
+    saved_timezone = db.Column(db.String(100))
+    sent = db.Column(db.Boolean(), default=False)
+    
+    def __repr__(self):
+        return f"<Reminder at {self.time} for task {self.task.name}>"
 
 class GlobalSetting(db.Model):
     key = db.Column(db.String(32), primary_key=True)

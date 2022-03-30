@@ -2,10 +2,10 @@ from flask_login import login_required
 from app.main import main
 from flask import render_template, redirect, url_for, flash, request, abort
 from flask_login import current_user
-from app.models import Task
+from app.models import Task, Reminder
 from app import db
 import re
-from app.main.forms import TaskEditForm, re_date, re_time, DeleteTaskForm, FavoriteTaskForm, MarkTaskForm
+from app.main.forms import TaskEditForm, re_date, re_time, DeleteTaskForm, FavoriteTaskForm, MarkTaskForm, AddReminderForm, DeleteReminderForm
 from datetime import datetime
 import pytz
 
@@ -97,29 +97,53 @@ def edit_task(task_id):
             tlocal = from_utc(task.deadline, tz)
             t['date'] = tlocal.strftime('%d/%m/%Y')
             t['time'] = tlocal.strftime('%H:%M')
+        else:
+            tz = None
 
         form = TaskEditForm(taskname=task.name,due=t)
+        remform = AddReminderForm(taskid = task_id, time={'timezone': tz})
         if form.validate_on_submit():
             # Convert user's datetime to UTC
-            if form.due.date.data and form.due.time.data:
-                # Parse timezone, date, and time
+            dt = form.due.parse_utc()
+            if dt is not None:
                 timezone = form.due.timezone.data
-                ddmmyyyy = re.match(re_date, form.due.date.data).groups()
-                day, month, year = int(ddmmyyyy[0]),int(ddmmyyyy[1]), int(ddmmyyyy[2])
-                hm = re.match(re_time, form.due.time.data).groups()
-                hour,minute = int(hm[0]), int(hm[1])
-                # Convert to a datetime object
-                dt = to_utc(datetime(year,month,day,hour,minute), timezone)
             else:
                 timezone = None
-                dt = None
-
             task.name = form.taskname.data
             task.deadline = dt
             task.saved_timezone = timezone
             db.session.commit()
             return redirect(url_for('main.index'))
+        elif remform.validate_on_submit():
+            dt = remform.time.parse_utc()
+            if dt is not None:
+                timezone = remform.time.timezone.data
+                rem = Reminder(task=task, time=dt, saved_timezone=timezone)
+                db.session.add(rem)
+                db.session.commit()
+                return redirect(url_for('main.edit_task', task_id=task_id))
         else:
-            return render_template('task.html',task=task, form=form)
+            reminders = task.get_reminders()
+            remrows = [(
+                rem,
+                DeleteReminderForm(reminderid=rem.id.hex())
+            ) for rem in reminders]
+            return render_template('task.html',task=task, form=form, remform=remform, remrows=remrows)
+    else:
+        abort(404)
+
+@main.route('/delete_reminder', methods=['POST'])
+@login_required
+def delete_reminder():
+    form = DeleteReminderForm()
+    if form.validate_on_submit():
+        b = bytes.fromhex(form.reminderid.data)
+        rem = Reminder.query.get(b)
+        if rem is not None and rem.task.owner==current_user:
+            db.session.delete(rem)
+            db.session.commit()
+            return redirect(url_for('main.edit_task', task_id=rem.task.id.hex()))
+        else:
+            abort(404)
     else:
         abort(404)

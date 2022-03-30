@@ -1,0 +1,13 @@
+<tr>
+    <td>
+        <span class="deadline utc" data-utc="{{ reminder.time.strftime('%Y-%m-%dT%H:%M:%SZ') }}">{{ reminder.time.strftime('%Y-%m-%dT%H:%M:%SZ') }}</span>
+    </td>
+    <td>
+        <form method="POST" action="{{ url_for('main.delete_reminder') }}">
+            {{ delform.hidden_tag() }}
+            <a class="icon has-text-danger form-submit" data-confirm="Are you sure you want to delete this reminder?" title="Delete reminder">
+                <i class="far fa-times"></i>
+            </a>
+        </form>
+    </td>
+</tr>

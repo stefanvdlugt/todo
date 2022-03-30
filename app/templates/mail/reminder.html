@@ -1,0 +1,6 @@
+<p>Dear {{ user.username }},</p>
+<p>You are receiving this message as a reminder for your task <i>{{ task.name }}</i>{% if task.deadline %} with deadline {{ task.get_time_string() }}{% endif %}.</p>
+<p>To edit this task, <a href="{{ url_for('main.edit_task', task_id = task.id.hex()) }}">click here</a>, or copy the following URL to your browser:</p>
+<p>{{ url_for('main.edit_task', task_id = task.id.hex()) }}</p>
+<p>To view all your tasks, <a href="{{ url_for('main.index') }}">click here</a>, or go to:</p>
+<p>{{ url_for('main.index') }}</p>

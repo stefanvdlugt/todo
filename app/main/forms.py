@@ -25,9 +25,12 @@ class DateTimeForm(FlaskForm):
     date = StringField('Date', render_kw={'placeholder': 'dd/mm/yyyy', 'class': 'input'})
     time = StringField('Time', render_kw={'placeholder': 'hh:mm', 'class': 'input'})
     timezone = SelectField('Timezone', choices=tz_choices)
+    required = False
 
     def validate_date(form, field):
-        if bool(field.data) != bool(form.time.data):
+        if form.required and not bool(field.data):
+            raise ValidationError('Date field cannot be empty.')
+        elif (not form.required) and bool(field.data) != bool(form.time.data):
             raise ValidationError('Date and time fields should both be empty or filled in.')
         elif field.data:
             m = re.match(re_date, field.data)
@@ -41,7 +44,9 @@ class DateTimeForm(FlaskForm):
                 raise ValidationError('Date should be in dd/mm/yyyy format.')
 
     def validate_time(form, field):
-        if bool(field.data) != bool(form.date.data):
+        if form.required and not bool(field.data):
+            raise ValidationError('Time field cannot be empty.')
+        elif (not form.required) and bool(field.data) != bool(form.date.data):
             raise ValidationError('Date and time fields should both be empty or filled in.')
         elif field.data:
             if not re.match(re_time, field.data):
@@ -50,9 +55,19 @@ class DateTimeForm(FlaskForm):
     def validate_timezone(form, field):
         if field.data not in pytz.all_timezones:
             raise ValidationError('Not a valid timezone.')
-
-
-
+    
+    def parse_utc(form):
+        if (not form.date.data) or (not form.time.data) or (not form.timezone.data):
+            return None
+        timezone = form.timezone.data
+        day,month,year = [int(_) for _ in re.match(re_date, form.date.data).groups()]
+        hour,minute = [int(_) for _ in re.match(re_time, form.time.data).groups()]
+        dt = datetime.datetime(year,month,day,hour,minute)
+        tz = pytz.timezone(timezone)
+        return tz.normalize(tz.localize(dt)).astimezone(pytz.utc)
+    
+class RequiredDateTimeForm(DateTimeForm):
+    required = True
 
 class TaskEditForm(FlaskForm):
     taskname = StringField('Task name', validators=[DataRequired(), Length(max=100)])
@@ -69,4 +84,11 @@ class FavoriteTaskForm(FlaskForm):
 class MarkTaskForm(FlaskForm):
     taskid = HiddenField(validators=[DataRequired(), IsHex()])
     status = HiddenField(validators=[DataRequired(), Regexp('^[01]$')])
-    
+
+class AddReminderForm(FlaskForm):
+    taskid = HiddenField(validators=[DataRequired(), IsHex()])
+    time = FormField(RequiredDateTimeForm, label='Reminder date')
+    submit = SubmitField('Add')
+
+class DeleteReminderForm(FlaskForm):
+    reminderid = HiddenField(validators=[DataRequired(), IsHex()])

@@ -29,6 +29,29 @@
                         {{ render_field(form.submit, class="is-success") }}
                     </form>
                     <br/>
+                    <form action="" method="post">
+                        <h4 class="title has-text-black">Reminders</h4>
+                        {{ remform.hidden_tag() }}
+                        <div class="field has-addons">
+                            {{ remform.time.hidden_tag() }}
+                            {{ render_field(remform.time.date, showlabel=False, fieldtag=False) }}
+                            {{ render_field(remform.time.time, showlabel=False, fieldtag=False) }}
+                            {{ render_field(remform.time.timezone, showlabel=False, fieldtag=False, icon="fas fa-globe", class="tzselect") }}
+                            {{ render_field(remform.submit, showlabel=False, fieldtag=False) }}
+                        </div>
+                    </form>
+                    <table class="table is-hoverable is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th>Reminder time</th>
+                                <th style="width:.1%"></th>
+                            </tr>
+                        </thead>
+                        {% for reminder,delform in remrows %}
+                        {% include '_reminder_line.html' %}
+                        {% endfor %}
+                    </table>
+                    <br/>
                 </div>
             </div>
         </div>
