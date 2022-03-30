@@ -9,3 +9,4 @@ Flask-Mail
 python-dotenv
 pytz
 pyjwt
+Flask-APScheduler
