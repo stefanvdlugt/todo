@@ -43,9 +43,12 @@
                             {{ remform.time.hidden_tag() }}
                             {{ input(remform.time.date, controlstyle="is-expanded") }}
                             {{ input(remform.time.time, controlstyle="is-expanded") }}
-                            <div class="control" style="width:40%;">
+                            <div class="control has-icons-left" style="width:40%;">
                                 <div class="select">
                                     {{ remform.time.timezone(class_="select tzselect") }}
+                                    <div class="icon is-small is-left">
+                                        <i class="fas fa-globe"></i>
+                                    </div>
                                 </div>
                             </div>
                             {{ button(remform.submit, icon="fas fa-plus", style="is-primary") }}
