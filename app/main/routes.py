@@ -113,7 +113,9 @@ def edit_task(task_id):
             task.deadline = dt
             task.saved_timezone = timezone
             db.session.commit()
-            return redirect(url_for('main.index'))
+            if form.submitclose.data:
+                return redirect(url_for('main.index'))
+            return redirect(url_for('main.edit_task', task_id=task_id))
         elif remform.validate_on_submit():
             dt = remform.time.parse_utc()
             if dt is not None:

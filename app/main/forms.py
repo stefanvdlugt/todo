@@ -73,6 +73,7 @@ class TaskEditForm(FlaskForm):
     taskname = StringField('Task name', validators=[DataRequired(), Length(max=100)])
     due = FormField(DateTimeForm, label='Due date')
     submit = SubmitField('Save')
+    submitclose = SubmitField('Save and close')
 
 class DeleteTaskForm(FlaskForm):
     taskid = HiddenField(validators=[DataRequired(), IsHex()])

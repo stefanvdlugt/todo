@@ -26,7 +26,10 @@
                             {{ render_field(form.due.time, showlabel=False, fieldtag=False) }}
                         </div>
                         {{ render_field(form.due.timezone, icon="fas fa-globe", class="tzselect") }}
-                        {{ render_field(form.submit, class="is-success") }}
+                        <div class="field is-grouped">
+                        {{ render_field(form.submit, style="is-primary", fieldtag=False) }}
+                        {{ render_field(form.submitclose, fieldtag=False) }}
+                        </div>
                     </form>
                     <br/>
                     <form action="" method="post">
