@@ -22,8 +22,12 @@
                             {{ form.due.label(class_="label") }}
                         </div>
                         <div class="field has-addons">
-                            {{ render_field(form.due.date, showlabel=False, fieldtag=False) }}
-                            {{ render_field(form.due.time, showlabel=False, fieldtag=False) }}
+                            <div class="control is-expanded">
+                                {{ form.due.date(class_="input") }}
+                            </div>
+                            <div class="control is-expanded">
+                                {{ form.due.time(class_="input") }}
+                            </div>
                         </div>
                         {{ render_field(form.due.timezone, icon="fas fa-globe", class="tzselect") }}
                         <div class="field is-grouped">
@@ -37,10 +41,14 @@
                         {{ remform.hidden_tag() }}
                         <div class="field has-addons">
                             {{ remform.time.hidden_tag() }}
-                            {{ render_field(remform.time.date, showlabel=False, fieldtag=False) }}
-                            {{ render_field(remform.time.time, showlabel=False, fieldtag=False) }}
-                            {{ render_field(remform.time.timezone, showlabel=False, fieldtag=False, icon="fas fa-globe", class="tzselect") }}
-                            {{ render_field(remform.submit, showlabel=False, fieldtag=False, style="is-primary", icon="fas fa-plus") }}
+                            {{ input(remform.time.date, controlstyle="is-expanded") }}
+                            {{ input(remform.time.time, controlstyle="is-expanded") }}
+                            <div class="control" style="width:40%;">
+                                <div class="select">
+                                    {{ remform.time.timezone(class_="select tzselect") }}
+                                </div>
+                            </div>
+                            {{ button(remform.submit, icon="fas fa-plus", style="is-primary") }}
                         </div>
                     </form>
                     <table class="table is-hoverable is-fullwidth">

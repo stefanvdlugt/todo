@@ -1,3 +1,44 @@
+{% macro label(field) %}
+{{ field.label(class_="label") }}
+{% endmacro %}
+
+{% macro input(field,icon="",class="",style="",controlstyle="") %}
+<div class="control{% if icon %} has-icons-left{% endif %} {{controlstyle}}">
+    {{ field(class_="input "~style~" "~class) }}
+    {% if icon %}
+    <span class="icon is-small is-left">
+        <i class="{{icon}}"></i>
+    </span>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro select(field, icon="", class="", style="", controlstyle="") %}
+<div class="control{% if icon %} has-icons-left{% endif %} {{controlstyle}}">
+    <div class="select {{style}}">
+        {{ field(class_="select "~class) }}
+    </div>
+    {% if icon %}
+    <div class="icon is-small is-left">
+        <i class="{{icon}}"></i>
+    </div>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro button(field,icon="",showtext=True,class="",style="",type="submit") %}
+<div class="control">
+<button class="button {{style}} {{class}}" type="{{type}}" name="{{field.name}}" id="{{field.id}}" value="{{field.label.text}}">
+    {% if icon %}
+    <span class="icon is-small">
+        <i class="{{ icon }}"></i>
+    </span>
+    {% endif %}
+    <span>{{ field.label }}</span>
+</button>
+</div>
+{% endmacro %}
+
 {% macro render_field(field, icon="", style="", class="", showlabel=True, fieldtag=True) %}
 {% if fieldtag %}<div class="field">{% endif %}
     {% if field.errors %}
