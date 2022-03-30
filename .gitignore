@@ -5,3 +5,4 @@ logs/
 .vscode/
 *.pyc
 __pycache__/
+.python-version
