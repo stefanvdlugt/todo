@@ -16,7 +16,7 @@
                     {% endwith %}
                     <form action="" method="post" autocomplete="off">
                         {{ form.hidden_tag() }}
-                        {{ render_field(form.enableregistration) }}
+                        {{ render_field_full(form.enableregistration) }}
                         {{ render_field(form.submit, style="is-primary") }}
                     </form>
                     <br/>

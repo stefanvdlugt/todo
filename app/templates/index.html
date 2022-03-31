@@ -4,21 +4,10 @@
 <section class="section">
 <h1 class="title">Current tasks</h1>
 <form action="{{ url_for('main.add_task') }}" method="post">
+    {{ atform.hidden_tag() }}
     <div class="field has-addons">
-        <p class="control has-icons-left is-expanded">
-            <input class="input" type="text" name="task" placeholder="Add a new task...">
-            <span class="icon is-small is-left">
-                <i class="fas fa-tasks"></i>
-            </span>
-        </p>
-        <div class="control">
-            <button class="button is-success">
-                <span class="icon">
-                    <i class="fas fa-plus"></i>
-                </span>
-                <span>Add</span>
-            </button>
-        </div>
+        {{ render_field(atform.taskname,icon="fas fa-tasks", controlstyle="is-expanded") }}
+        {{ render_field(atform.submit, style="is-primary", icon="fas fa-plus") }}
     </div>
 </form>
 <table class="table is-hoverable is-fullwidth">

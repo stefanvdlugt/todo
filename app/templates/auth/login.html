@@ -15,11 +15,7 @@
                     {% endfor %}
                     {% endwith %}
                     <form action="" method="post">
-                        {{ form.hidden_tag() }}
-                        {{ render_field(form.username, icon="fas fa-user") }}
-                        {{ render_field(form.password, icon="fas fa-key") }}
-                        {{ render_field(form.remember_me) }}
-                        {{ render_field(form.submit, style="is-success") }}
+                        {{ quick_form(form,button_style="is-primary") }}
                     </form>
                     <br/>
                     {% if enableRegistration %}

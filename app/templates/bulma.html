@@ -1,0 +1,83 @@
+{% macro quick_form(form,button_style="") %}
+{{ form.hidden_tag() }}
+{% for field in form %}
+{% if field.widget.__class__.__name__ != "HiddenInput" %}
+{% set s = button_style if field.type=="SubmitField" else "" %}
+{{ render_field_full(field, style=s) }}
+{% endif %}
+{% endfor %}
+{% endmacro %}
+
+{% macro render_field_full(field,icon="",class="",style="",controlstyle="",type="") %}
+<div class="field">
+    {% if not (field.type in ("BooleanField", "RadioField", "SubmitField")) %}
+    {{ label(field) }}
+    {% endif %}
+    {{ render_field(field=field,icon=icon,class=class,style=style,controlstyle=controlstyle,type=type) }}
+    {{ errors(field) }}
+</div>
+{% endmacro %}
+
+{% macro render_field(field,icon="",class="",style="",controlstyle="",type="",check_errors=True) %}
+
+{% set e = "is-danger" if check_errors and field.errors else "" %}
+{% set et = "has-text-danger" if check_errors and field.errors else "" %}
+{% set i = "has-icons-left" if icon else "" %}
+{% if field.type in ("TextAreaField",) %}
+    {# does not support icons #}
+    <div class="control {{controlstyle}}">{{ field(class_=(["textarea",style,class,e]|join(' '))) }}</div>
+{% elif field.type in ("SelectField", "SelectMultipleField") %}
+    {# select dropdown field #}
+    <div class="control {{i}} {{controlstyle}}">
+        <div class="select {{style}}">
+            {{ field(class_=class) }}
+        </div>
+        {% if icon %}<div class="icon is-small is-left"><i class="{{icon}}"></i></div>{% endif %}
+    </div>
+{% elif field.type in ("BooleanField",) %}
+    {# render checkbox #}
+    <div class="control {{controlstyle}} {{et}}">
+        <label class="checkbox {{style}}">
+            {{ field(class_=class) }} 
+            <span class="{{e}}">{{ field.label }}</span>
+        </label>
+    </div>
+{% elif field.type in ("RadioField",) %}
+    {# render radio button #}
+    <div class="control {{controlstyle}} {{et}}">
+        {% for subfield in field %}
+        {{ subfield }} {{ subfield.label }}
+        {% endfor %}
+    </div>
+{% elif field.type in ("SubmitField",) %}
+    {% set type = type if type else "submit" %}
+    <div class="control {{controlstyle}}">
+        <button class="button {{style}} {{class}}" type="{{submit}}" name="{{field.name}}" id="{{field.id}}" value="{{field.label.text}}">
+            {% if icon %}
+            <span class="icon is-small">
+                <i class="{{ icon }}"></i>
+            </span>
+            {% endif %}
+            <span>{{ field.label }}</span>
+        </button>
+    </div>
+{% else %}
+    {# assume input field #}
+    <div class="control {{i}} {{controlstyle}}">
+        {{ field(class_=(["input",class,style,e]|join(' '))) }}
+        {% if icon %}<span class="icon is-small is-left"><i class="{{icon}}"></i></span>{% endif %}
+    </div>
+{% endif %}
+
+
+{% endmacro %}
+
+{% macro label(field) %}
+{{ field.label(class_="label") }}
+{% endmacro %}
+
+{% macro errors(field) %}
+{% for err in field.errors %}
+{% if err %}<p class="help is-danger">{{ err }}</p>{% endif %}
+{% endfor %}
+{% endmacro %}

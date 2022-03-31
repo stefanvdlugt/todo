@@ -16,42 +16,35 @@
                     {% endwith %}
                     <form action="" method="post">
                         {{ form.hidden_tag() }}
-                        {{ render_field(form.taskname, icon="fas fa-edit") }}
+                        {{ render_field_full(form.taskname, icon="fas fa-edit") }}
                         {{ form.due.hidden_tag() }}
-                        <div class="label">
-                            {{ form.due.label(class_="label") }}
-                        </div>
-                        <div class="field has-addons">
-                            <div class="control is-expanded">
-                                {{ form.due.date(class_="input") }}
+                        <div class="field">
+                            {{ label(form.due) }}
+                            <div class="field is-grouped">
+                                {{ render_field(form.due.date, controlstyle="is-expanded") }}
+                                {{ render_field(form.due.time, controlstyle="is-expanded") }}
                             </div>
-                            <div class="control is-expanded">
-                                {{ form.due.time(class_="input") }}
-                            </div>
+                            {{ errors(form.due.date) }}
+                            {{ errors(form.due.time) }}
                         </div>
-                        {{ render_field(form.due.timezone, icon="fas fa-globe", class="tzselect") }}
+                        {{ render_field_full(form.due.timezone, icon="fas fa-globe", class="tzselect") }}
                         <div class="field is-grouped">
-                        {{ render_field(form.submit, style="is-primary", fieldtag=False) }}
-                        {{ render_field(form.submitclose, fieldtag=False) }}
+                            {{ render_field(form.submit, style="is-primary") }}
+                            {{ render_field(form.submitclose) }}
                         </div>
                     </form>
                     <br/>
                     <form action="" method="post">
                         <h4 class="title has-text-black">Reminders</h4>
                         {{ remform.hidden_tag() }}
-                        <div class="field has-addons">
-                            {{ remform.time.hidden_tag() }}
-                            {{ input(remform.time.date, controlstyle="is-expanded") }}
-                            {{ input(remform.time.time, controlstyle="is-expanded") }}
-                            <div class="control has-icons-left" style="width:40%;">
-                                <div class="select">
-                                    {{ remform.time.timezone(class_="select tzselect") }}
-                                    <div class="icon is-small is-left">
-                                        <i class="fas fa-globe"></i>
-                                    </div>
-                                </div>
+                        {{ remform.time.hidden_tag() }}
+                        <div class="field is-grouped">
+                            {{ render_field(remform.time.date, controlstyle="is-expanded") }}
+                            {{ render_field(remform.time.time, controlstyle="is-expanded") }}
+                            <div class="control" style="width:40%;">
+                                {{ render_field(remform.time.timezone, icon="fas fa-globe") }}
                             </div>
-                            {{ button(remform.submit, icon="fas fa-plus", style="is-primary") }}
+                            {{ render_field(remform.submit, icon="fas fa-plus", style="is-primary")}}
                         </div>
                     </form>
                     <table class="table is-hoverable is-fullwidth">

@@ -21,6 +21,10 @@ class IsHex(object):
         except:
             raise ValidationError(self.message)
 
+class AddTaskForm(FlaskForm):
+    taskname = StringField('Add a new task...', render_kw={'placeholder': 'Add a new task...'}, validators=[DataRequired()])
+    submit = SubmitField('Add')
+    
 class DateTimeForm(FlaskForm):
     date = StringField('Date', render_kw={'placeholder': 'dd/mm/yyyy', 'class': 'input'})
     time = StringField('Time', render_kw={'placeholder': 'hh:mm', 'class': 'input'})

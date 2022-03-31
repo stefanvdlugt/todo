@@ -5,7 +5,7 @@ from flask_login import current_user
 from app.models import Task, Reminder
 from app import db
 import re
-from app.main.forms import TaskEditForm, re_date, re_time, DeleteTaskForm, FavoriteTaskForm, MarkTaskForm, AddReminderForm, DeleteReminderForm
+from app.main.forms import AddTaskForm, TaskEditForm, re_date, re_time, DeleteTaskForm, FavoriteTaskForm, MarkTaskForm, AddReminderForm, DeleteReminderForm
 from datetime import datetime
 import pytz
 
@@ -22,6 +22,7 @@ def from_utc(datetime, timezone):
 @main.route('/index')
 @login_required
 def index():
+    atform = AddTaskForm()
     tasks = current_user.get_tasks()
     rows = [ (
         task,
@@ -29,16 +30,18 @@ def index():
         FavoriteTaskForm(taskid=task.id.hex(), status='0' if task.favorite else '1'),
         DeleteTaskForm(taskid=task.id.hex()),
     ) for task in tasks ]
-    return render_template('index.html',rows=rows)
+    return render_template('index.html',atform=atform,rows=rows)
 
 @main.route('/add_task', methods=['POST'])
 @login_required
 def add_task():
-    name = request.form.get('task')
-    if name:
-        t = Task(name=name, owner=current_user)
-        db.session.add(t)
-        db.session.commit()
+    atform = AddTaskForm()
+    if atform.validate_on_submit():
+        name = atform.taskname.data
+        if name:
+            t = Task(name=name, owner=current_user)
+            db.session.add(t)
+            db.session.commit()
     return redirect(url_for('main.index'))
 
 @main.route('/mark_task', methods=['POST'])
@@ -101,8 +104,8 @@ def edit_task(task_id):
             tz = None
 
         form = TaskEditForm(taskname=task.name,due=t)
-        remform = AddReminderForm(taskid = task_id, time={'timezone': tz})
-        if form.validate_on_submit():
+        remform = AddReminderForm(taskid = task_id, time={'timezone': tz}, prefix='addreminder')
+        if (form.submit.data or form.submitclose.data) and form.validate():
             # Convert user's datetime to UTC
             dt = form.due.parse_utc()
             if dt is not None:
@@ -116,7 +119,7 @@ def edit_task(task_id):
             if form.submitclose.data:
                 return redirect(url_for('main.index'))
             return redirect(url_for('main.edit_task', task_id=task_id))
-        elif remform.validate_on_submit():
+        elif remform.submit.data and remform.validate():
             dt = remform.time.parse_utc()
             if dt is not None:
                 timezone = remform.time.timezone.data
@@ -124,13 +127,14 @@ def edit_task(task_id):
                 db.session.add(rem)
                 db.session.commit()
                 return redirect(url_for('main.edit_task', task_id=task_id))
-        else:
-            reminders = task.get_reminders()
-            remrows = [(
-                rem,
-                DeleteReminderForm(reminderid=rem.id.hex())
-            ) for rem in reminders]
-            return render_template('task.html',task=task, form=form, remform=remform, remrows=remrows)
+        # if we get this far, no form was submitted, or a
+        # form was filled out incorrectly.
+        reminders = task.get_reminders()
+        remrows = [(
+            rem,
+            DeleteReminderForm(reminderid=rem.id.hex())
+        ) for rem in reminders]
+        return render_template('task.html',task=task, form=form, remform=remform, remrows=remrows)
     else:
         abort(404)
 
