@@ -12,3 +12,4 @@ pyjwt
 Flask-APScheduler
 gunicorn
 pymysql
+cryptography
