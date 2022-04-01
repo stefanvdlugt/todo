@@ -1,23 +1,19 @@
 FROM python:slim
 
-RUN useradd app
-WORKDIR /home/app
+RUN mkdir /app; mkdir /config
+WORKDIR /app
+COPY app app/
+COPY migrations migrations/
+COPY config.py requirements.txt todo.py ./
 
-COPY requirements.txt requirements.txt
-RUN python -m venv .env
-RUN .env/bin/pip install -r requirements.txt
-RUN .env/bin/pip install gunicorn pymysql cryptography
-COPY app app
-COPY migrations migrations
-COPY config.py todo.py entrypoint.sh ./
-RUN chmod +x entrypoint.sh
+ENTRYPOINT ["/bin/bash"]
+
+RUN python -m venv venv && . venv/bin/activate && pip install -r requirements.txt
 
 ENV FLASK_APP todo.py
 
-RUN chown -R app:app ./
-
-RUN mkdir /config && chown -R app:app /config
-
-USER app
 EXPOSE 5000
+
+COPY entrypoint.sh ./
+RUN chmod +x entrypoint.sh
 ENTRYPOINT ["./entrypoint.sh"]
