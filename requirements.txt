@@ -10,3 +10,5 @@ python-dotenv
 pytz
 pyjwt
 Flask-APScheduler
+gunicorn
+pymysql
