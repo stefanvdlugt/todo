@@ -25,6 +25,6 @@ services:
       MAIL_PASSWORD: ${MAIL_PASSWORD}
       MAIL_FROM: ${MAIL_FROM}
     ports:
-      - "8000:5000"
+      - "5000:5000"
 
 
