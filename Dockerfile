@@ -15,6 +15,9 @@ RUN chmod +x entrypoint.sh
 ENV FLASK_APP todo.py
 
 RUN chown -R app:app ./
+
+RUN mkdir /config && chown -R app:app /config
+
 USER app
 EXPOSE 5000
 ENTRYPOINT ["./entrypoint.sh"]
