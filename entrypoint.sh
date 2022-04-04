@@ -7,6 +7,7 @@ PGID=${PGID:-1000}
 getent group app &>/dev/null  || groupadd -og ${PGID} app
 getent passwd app &>/dev/null || useradd -og ${PGID} -M -d /config -u ${PUID} app
 
+mkdir -p /config
 chown -R app:app /config
 
 su -s /bin/bash app <<EOF
