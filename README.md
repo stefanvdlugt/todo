@@ -6,34 +6,38 @@
 - receive reminders by mail
 
 ## Installation and usage
-Copy/rename the file `.env.sample` to `.env` and adjust settings.
 
 ### Using docker-compose (easiest)
-Run the following commands:
-    git clone https://github.com/stefanvdlugt/todo.git
-    cd todo/
-    docker-compose build
-    docker-compose up -d
-
-### Using Docker
-Run the following commands:
-    git clone https://github.com/stefanvdlugt/todo.git
-    cd todo/
-    docker build -t todoapp .
-    
+Clone the repository:
+```
+git clone https://github.com/stefanvdlugt/todo.git
+cd todo/
+```
+Rename/copy the file `todo.env.sample` to `todo.env` and edit it to set some application options.
+Then run the following commands:
+```
+docker-compose build
+docker-compose up -d
+```
+The application will listen on port 5000.
 
 ### Standalone, using Python
-Make sure you have a working installation of Python 3 with `pip` (and optionally `venv`) installed, and run
-    git clone https://github.com/stefanvdlugt/todo.git
-    cd todo/
-    cp .env.sample .env
-    # edit settings using your editor of choice:
-    vi .env
-    # optionally, if venv is installed:
-    python -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
-    flask db upgrade
-    gunicorn -b :5000 --access-logfile - --error-logfile - todo:app
-
-
+Clone the repository
+```
+git clone https://github.com/stefanvdlugt/todo.git
+cd todo/
+```
+(Optionally) create and activate a virtual environment
+```
+python -m venv venv
+source venv/bin/activate
+```
+Install dependencies
+```
+pip install -r requirements.txt
+```
+Rename/copy the file `todo.env.sample` to `todo.env` and edit it to set some application options.
+Then run the application:
+```
+./run.sh
+```

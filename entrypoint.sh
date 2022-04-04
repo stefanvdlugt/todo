@@ -1,19 +1,17 @@
 #!/bin/bash
+set -e
 
-PUID=${PUID:-0}
-PGID=${PGID:-0}
-export DATABASE_URL=${DATABASE_URL:-'sqlite:////config/app.db'}
+PUID=${PUID:-1000}
+PGID=${PGID:-1000}
 
-groupadd -og ${PGID} app
-useradd -og ${PGID} -M -d /config -u ${PUID} app
+getent group app &>/dev/null  || groupadd -og ${PGID} app
+getent passwd app &>/dev/null || useradd -og ${PGID} -M -d /config -u ${PUID} app
 
 chown -R app:app /config
 
-su -s /bin/bash app <<'EOF'
+su -s /bin/bash app <<EOF
 cd /app
 source venv/bin/activate
-echo ${DATABASE_URL}
-echo ${SECRET_KEY}
 while true; do
     flask db upgrade
     if [[ "$?" == "0" ]]; then
