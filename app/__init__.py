@@ -39,6 +39,12 @@ def create_app(config_class=Config):
     scheduler.init_app(app)
     scheduler.start()
 
+    def context_processor():
+        return {
+            'current_app': app,
+        }
+    app.context_processor(context_processor)
+
     return app
 
 from app import models, tasks

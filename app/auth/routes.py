@@ -1,6 +1,6 @@
 from app.auth import auth
 from app import db
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, current_app
 from flask_login import current_user, login_user, logout_user
 from app.auth.forms import LoginForm, PasswordResetForm, RegistrationForm, RequestPasswordResetForm
 from app.models import User
@@ -54,6 +54,9 @@ def logout():
 
 @auth.route('/request_password_reset', methods=['GET','POST'])
 def request_password_reset():
+    if not current_app.config['MAIL_ENABLED']:
+        flash('Mail support is disabled.')
+        return redirect(url_for('auth.login'))
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     form = RequestPasswordResetForm()

@@ -22,7 +22,9 @@
                     Don't have an account? <u><a href="{{ url_for('auth.register') }}">Register here.</a></u>
                     <br/>
                     {% endif %}
+                    {% if current_app.config['MAIL_ENABLED'] %}
                     Forgot your password? <u><a href="{{ url_for('auth.request_password_reset') }}">Click here.</a></u>
+                    {% endif %}
                 </div>
             </div>
         </div>

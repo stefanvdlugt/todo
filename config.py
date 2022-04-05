@@ -48,6 +48,7 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = generate_db_uri()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    MAIL_ENABLED = bool(os.environ.get('MAIL_SERVER'))
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
     MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS','').lower() in ['1', 'true', 'yes', 'y']
