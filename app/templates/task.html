@@ -36,6 +36,11 @@
                     <br/>
                     <form action="" method="post">
                         <h4 class="title has-text-black">Reminders</h4>
+                        {% if not current_app.config['MAIL_ENABLED'] %}
+                        <div class="notification is-warning">
+                            Warning: reminders by email are disabled.
+                        </div>
+                        {% endif %}
                         {{ remform.hidden_tag() }}
                         {{ remform.time.hidden_tag() }}
                         <div class="field is-grouped">
