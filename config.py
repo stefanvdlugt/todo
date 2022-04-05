@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from uuid import uuid4
 
 basedir = os.environ.get('BASEDIR',os.path.abspath(os.path.dirname(__file__)))
-load_dotenv(os.path.join(basedir,'todo.env'))
+load_dotenv(dotenv_path=os.path.join(basedir,'todo.env'))
 
 def generate_db_uri():
     if os.environ.get('MYSQL_HOST'):
