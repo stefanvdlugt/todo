@@ -52,6 +52,11 @@
                     day: 'numeric'
                 }));
             });
+            $('div.notification').prepend('<button class="delete"></button>');
+            $('div.notification > button.delete').on('click', function() {
+                $(this).parent().remove();
+            });
+
         });
     </script>
 
